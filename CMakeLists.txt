@@ -7,12 +7,14 @@ project(stm32f4_freertos VERSION 0.0 LANGUAGES ASM C CXX)
 set(FREERTOS_DIR ${CMAKE_SOURCE_DIR}/freertos)
 
 file(GLOB_RECURSE SOURCES ${CMAKE_SOURCE_DIR}/src/*.c)
+file(GLOB_RECURSE SOURCES_DRIVER ${CMAKE_SOURCE_DIR}/driver/*.c)
 file(GLOB_RECURSE SOURCES_CC ${CMAKE_SOURCE_DIR}/src/*.cc)
 file(GLOB_RECURSE SOURCES_CPP ${CMAKE_SOURCE_DIR}/src/*.cpp)
 file(GLOB_RECURSE FREERTOS_SOURCES ${CMAKE_SOURCE_DIR}/freertos/*.c)
 
 list(APPEND SOURCES ${SOURCES_CC})
 list(APPEND SOURCES ${SOURCES_CPP})
+list(APPEND SOURCES ${SOURCES_DRIVER})
 list(APPEND SOURCES ${FREERTOS_SOURCES})
 
 list(FILTER SOURCES EXCLUDE REGEX "heap_1.c")
@@ -26,6 +28,7 @@ foreach(SRC IN LISTS SOURCES)
     
 endforeach()
 
+include_directories(${CMAKE_SOURCE_DIR}/driver/gpio)
 include_directories(${CMAKE_SOURCE_DIR}/core/CMSIS/Include)
 include_directories(${CMAKE_SOURCE_DIR}/core/CMSIS/Device)
 include_directories(${CMAKE_SOURCE_DIR}/inc)
@@ -44,7 +47,10 @@ target_compile_options(${PROJECT_NAME} PUBLIC
 
 target_link_options(${PROJECT_NAME} PUBLIC 
     -T${LINKER}
+    -Wl,--print-memory-usage
+    -Wl,--gc-sections
 )
+
 
 add_custom_command(
     TARGET ${PROJECT_NAME}
@@ -55,6 +61,14 @@ add_custom_command(
     TARGET ${PROJECT_NAME}
     POST_BUILD
     COMMAND ${CMAKE_OBJCOPY} -Oihex ${PROJECT_NAME}.elf ${PROJECT_NAME}.hex
+)
+
+add_custom_command(
+    TARGET ${PROJECT_NAME}
+    POST_BUILD
+    COMMAND echo "============================================================="
+    COMMAND ${CMAKE_SIZE}  ${PROJECT_NAME}.elf
+    COMMAND echo "============================================================="
 )
 
 add_custom_target(flash 

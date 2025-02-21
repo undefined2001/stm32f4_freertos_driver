@@ -3,9 +3,9 @@ set(TOOLCHAIN_PREFIX arm-none-eabi-)
 set(CMAKE_ASM_COMPILER /usr/bin/arm-none-eabi-gcc)
 set(CMAKE_C_COMPILER /usr/bin/arm-none-eabi-gcc)
 set(CMAKE_CXX_COMPILER /usr/bin/arm-none-eabi-g++)
-
-
 set(CMAKE_OBJCOPY ${TOOLCHAIN_PREFIX}objcopy)
+set(CMAKE_OBJDUMP ${TOOLCHAIN_PREFIX}objdump)
+set(CMAKE_SIZE ${TOOLCHAIN_PREFIX}size)
 
 set(STARTUP ${CMAKE_SOURCE_DIR}/core/Startup/startup_stm32f446retx.c)
 set(LINKER ${CMAKE_SOURCE_DIR}/STM32F446RETX_FLASH.ld)
