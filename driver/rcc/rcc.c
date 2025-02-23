@@ -1,6 +1,21 @@
 #include "rcc.h"
 #include "stddef.h"
 
+RCC_Error_t RCC_SetSystemClock(RCC_Config_t *pConfig)
+{
+    /**
+     * *Configuring All the Bus Prescaler [AHB1PRESCALER< APB1PRESCALER, APB2PRESCALER]
+     */
+    RCC->CFGR &= ~RCC_CFGR_HPRE;    //*Clearing Bit Position for AHB Prescaler
+    RCC->CFGR |= pConfig->apb1_pre; //* Setting the Value of AHB Prescaler
+
+    RCC->CFGR &= ~RCC_CFGR_PPRE1;   //* Clearing Bit position for APB1 Prescaler
+    RCC->CFGR |= pConfig->apb1_pre; //* Setting the value of APB1 Prescaler
+
+    RCC->CFGR &= ~RCC_CFGR_PPRE2;   //* Clearing Bit position for APB2 Prescaler
+    RCC->CFGR |= pConfig->apb2_pre; //* Setting the value of APB2 Prescaler
+}
+
 // Lookup table for GPIO base addresses and corresponding RCC enable bits
 static const struct
 {
