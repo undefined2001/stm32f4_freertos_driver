@@ -6,7 +6,6 @@
 #include "gpio.h"
 #include "rcc.h"
 
-
 void xGPIO_Config()
 {
     RCC_EnableGPIOClock(GPIOA);
