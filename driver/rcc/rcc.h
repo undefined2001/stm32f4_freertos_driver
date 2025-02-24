@@ -31,8 +31,8 @@
  * @defgroup Values for HSE Modes
  * @{
  */
-#define RCC_HSE_BYPASS 0U
-#define RCC_HSI_BYPASS 1U
+#define RCC_HSE_NO_BYPASS 0U
+#define RCC_HSE_BYPASS 1U
 /**@}*/
 
 /**
@@ -82,7 +82,7 @@ extern "C"
 
     } RCC_Error_t;
 
-    
+
     typedef struct
     {
         uint8_t clk_src;  // Clock source selection
