@@ -37,6 +37,7 @@ extern "C"
 
     typedef enum
     {
+        GPIO_ERR = -1,
         GPIO_OK = 0,           // No error
         GPIO_ERR_INVALID_PIN,  // Invalid pin number
         GPIO_ERR_NULL_PTR,     // Null pointer passed
@@ -63,6 +64,9 @@ extern "C"
      */
     GPIO_Error_t GPIO_Init(GPIO_Handle_t *pGPIOHandle);
     GPIO_Error_t GPIO_WritePin(GPIO_TypeDef *pGPIOx, uint32_t Pin, uint32_t value);
+    GPIO_Error_t GPIO_WritePort(GPIO_TypeDef *pGPIOx, uint16_t value);
+    uint32_t GPIO_ReadPin(GPIO_TypeDef *pGPIOx, uint32_t Pin);
+    uint32_t GPIO_ReadPort(GPIO_TypeDef *pGPIOx);
 
 #ifdef __cplusplus
 }

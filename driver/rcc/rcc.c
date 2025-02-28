@@ -1,6 +1,64 @@
 #include "rcc.h"
 #include "stddef.h"
 
+RCC_Error_t RCC_SetSystemClock(RCC_Config_t *pConfig)
+{
+    /**
+     * *Configuring All the Bus Prescaler [AHB1PRESCALER< APB1PRESCALER, APB2PRESCALER]
+     */
+    RCC->CFGR &= ~RCC_CFGR_HPRE;    //*Clearing Bit Position for AHB Prescaler
+    RCC->CFGR |= pConfig->apb1_pre; //* Setting the Value of AHB Prescaler
+
+    RCC->CFGR &= ~RCC_CFGR_PPRE1;   //* Clearing Bit position for APB1 Prescaler
+    RCC->CFGR |= pConfig->apb1_pre; //* Setting the value of APB1 Prescaler
+
+    RCC->CFGR &= ~RCC_CFGR_PPRE2;   //* Clearing Bit position for APB2 Prescaler
+    RCC->CFGR |= pConfig->apb2_pre; //* Setting the value of APB2 Prescaler
+
+    if (pConfig->clk_src == RCC_CLK_SRC_HSI)
+    {
+        RCC->CR |= RCC_CR_HSION; //* Enable HSI As a Clock Source
+
+        while (!(RCC->CR & RCC_CR_HSIRDY))
+            ; //* Wait untill HSI is stable
+
+        RCC->CFGR &= ~RCC_CFGR_SWS; //* Swtting all the bits to 0 so that HSI Works as a Clock Source
+
+        RCC->CR &= ~RCC_CR_HSEON; //* Disable HSE Source
+    }
+
+    if (pConfig->clk_src == RCC_CLK_SRC_HSE)
+    {
+        /**
+         * *Checking if HSE is Bypassed with external clock or not
+         * *If Bypassed then set the HSEBYP = 1
+         * *Else HSEBYP = 0
+         */
+        if (pConfig->hse_mode == RCC_HSE_BYPASS)
+        {
+            RCC->CR |= RCC_CR_HSEBYP;
+        }
+        else
+        {
+            RCC->CR &= ~RCC_CR_HSEBYP;
+        }
+
+        RCC->CR |= RCC_CR_HSEON; //* Turning on HSE Source
+
+        while (!(RCC->CR & RCC_CR_HSERDY))
+            ; //* Wait Until HSE is Stable and Ready to use
+
+        RCC->CFGR |= RCC_CFGR_SW_0; //* Switching the source to HSE Clock Source
+    }
+    else if (pConfig->clk_src == RCC_CLK_SRC_PLLP)
+    {
+    }
+    else
+    {
+        
+    }
+}
+
 // Lookup table for GPIO base addresses and corresponding RCC enable bits
 static const struct
 {
