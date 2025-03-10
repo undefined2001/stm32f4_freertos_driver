@@ -6,6 +6,8 @@
 #include "gpio.h"
 #include "rcc.h"
 
+void xSystemClockConfig();
+
 void xGPIO_Config()
 {
     RCC_EnableGPIOClock(GPIOA);
@@ -36,6 +38,7 @@ void xGPIO_Config()
 
 int main()
 {
+    // xSystemClockConfig();
     xGPIO_Config();
 
     uint32_t val = 0;
@@ -54,4 +57,29 @@ void vApplicationStackOverflowHook(TaskHandle_t xTask, char *pcTaskName)
     printf("Stack overflow detected in task: %s\n", pcTaskName);
     while (1)
         ; // Halt execution
+}
+
+void xSystemClockConfig()
+{
+    // Enabling PWR Clock
+    RCC->APB1ENR |= RCC_APB1ENR_PWREN;
+
+    // Setting Power Scaling to 3
+    PWR->CR |= PWR_CR_VOS;
+
+    // Setting Flash Latency, Enabling Data and Instruction Cache and prefetching
+    FLASH->ACR |= FLASH_ACR_DCEN | FLASH_ACR_ICEN | FLASH_ACR_PRFTEN | FLASH_ACR_LATENCY_5WS;
+
+    RCC_Config_t Config;
+
+    Config.ahb1_pre = RCC_AHBPRE_DIV1;
+    Config.apb1_pre = RCC_APBPRE_DIV4;
+    Config.apb2_pre = RCC_APBPRE_DIV2;
+    Config.clk_src = RCC_CLK_SRC_PLLP;
+    Config.hse_mode = RCC_HSE_NO_BYPASS;
+    Config.pllm = 4;
+    Config.plln = 180;
+    Config.pllp = 0;
+    Config.pllsrc = RCC_PLLSRC_HSE;
+    RCC_SetSystemClock(&Config);
 }

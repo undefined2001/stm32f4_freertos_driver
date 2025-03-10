@@ -57,6 +57,7 @@
  * @defgroup Values for AHB1 Prescaler
  * @{
  */
+#define RCC_AHBPRE_DIV1 0x0U
 #define RCC_AHBPRE_DIV2 0x8U
 #define RCC_AHBPRE_DIV4 0x9U
 #define RCC_AHBPRE_DIV8 0xAU
@@ -81,7 +82,6 @@ extern "C"
         RCC_INVALID_PLLP_VAL,
 
     } RCC_Error_t;
-
 
     typedef struct
     {
