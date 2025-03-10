@@ -1,4 +1,5 @@
 #include "gpio.h"
+#include "stddef.h"
 
 /**
  * @brief  Initializes the GPIO pin with the given configuration.
@@ -77,11 +78,32 @@ GPIO_Error_t GPIO_Init(GPIO_Handle_t *pGPIOHandle)
     // Setting Pullup/down
     pGPIOHandle->pGPIOx->PUPDR |= ~(pGPIOHandle->PuPd << (pGPIOHandle->Pin * 2));
 
+    /**
+     * GPIO Output Speed Configuration
+     * ------------------------------------
+     * Each GPIO pin has 2 bits in the OSPEEDR register:
+     * - 00: GPIO Output Speed Low
+     * - 01: GPIO Output Speed Medium
+     * - 10: GPIO Output Speed Fast
+     * - 11: GPIO Output Speed High
+     */
+
+    // Clearing Bits for OSPEEDR to avoid unexpected behavious due to garbage values
+    pGPIOHandle->pGPIOx->OSPEEDR &= ~(0x3U << (pGPIOHandle->Pin * 2U));
+
+    // Setting Output Speed value
+    pGPIOHandle->pGPIOx->OSPEEDR |= (pGPIOHandle->Ospeed << (pGPIOHandle->Pin * 2U));
+
     return GPIO_OK; // Return success
 }
 
 GPIO_Error_t GPIO_WritePin(GPIO_TypeDef *pGPIOx, uint32_t Pin, uint32_t value)
 {
+    if (pGPIOx == NULL || Pin > 15)
+    {
+        return GPIO_ERR;
+    }
+    
     if (value == GPIO_STATE_HIGH)
     {
         pGPIOx->BSRR |= 0x1U << Pin;
@@ -91,4 +113,25 @@ GPIO_Error_t GPIO_WritePin(GPIO_TypeDef *pGPIOx, uint32_t Pin, uint32_t value)
         pGPIOx->BSRR |= 0x1U << (Pin + 16U);
     }
     return GPIO_OK;
+}
+
+GPIO_Error_t GPIO_WritePort(GPIO_TypeDef *pGPIOx, uint16_t value)
+{
+    if (pGPIOx != NULL)
+    {
+        pGPIOx->ODR = value;
+        return GPIO_OK;
+    }
+    return GPIO_ERR;
+}
+
+uint32_t GPIO_ReadPin(GPIO_TypeDef *pGPIOx, uint32_t Pin)
+{
+    return ((pGPIOx->IDR >> Pin) & 0x1U);
+}
+
+uint32_t GPIO_ReadPort(GPIO_TypeDef *pGPIOx)
+{
+    // Returning GPIO Port's Input Data Register and masking it with 0xFFFF so that we don't get higher value than 16bit
+    return (pGPIOx->IDR & 0xFFFF);
 }

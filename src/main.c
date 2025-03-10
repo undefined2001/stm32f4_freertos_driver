@@ -7,9 +7,17 @@
 #include "rcc.h"
 
 void xSystemClockConfig();
+
 void xGPIO_Config()
 {
     RCC_EnableGPIOClock(GPIOA);
+    RCC_EnableGPIOClock(GPIOC);
+
+    GPIO_Handle_t UserBtn1;
+    UserBtn1.pGPIOx = GPIOC;
+    UserBtn1.Pin = 13;
+    UserBtn1.Mode = GPIO_MODE_INPUT;
+    UserBtn1.PuPd = GPIO_PUPD_PULLUP;
 
     GPIO_Handle_t UserLed1;
     UserLed1.pGPIOx = GPIOA;
@@ -17,44 +25,14 @@ void xGPIO_Config()
     UserLed1.Mode = GPIO_MODE_OUTPUT;
     UserLed1.Otype = GPIO_OTYPE_PUSHPULL;
 
-    GPIO_Handle_t UserLed2;
-    UserLed2.pGPIOx = GPIOA;
-    UserLed2.Pin = 0;
-    UserLed2.Mode = GPIO_MODE_OUTPUT;
-    UserLed2.Otype = GPIO_OTYPE_PUSHPULL;
-
     if (GPIO_Init(&UserLed1) != GPIO_OK)
     {
         printf("GPIO_Init failed for Pin %d\n", UserLed1.Pin);
     }
 
-    if (GPIO_Init(&UserLed2) != GPIO_OK)
+    if (GPIO_Init(&UserBtn1) != GPIO_OK)
     {
-        printf("GPIO_Init failed for Pin %d\n", UserLed2.Pin);
-    }
-}
-
-void xTaskLed1(void *pvParams)
-{
-    while (1)
-    {
-        GPIO_WritePin(GPIOA, 5, GPIO_STATE_HIGH);
-        vTaskDelay(pdMS_TO_TICKS(500));
-
-        GPIO_WritePin(GPIOA, 5, GPIO_STATE_LOW);
-        vTaskDelay(pdMS_TO_TICKS(500));
-    }
-}
-
-void xTaskLed2(void *pvParams)
-{
-    while (1)
-    {
-        GPIO_WritePin(GPIOA, 0, GPIO_STATE_HIGH);
-        vTaskDelay(pdMS_TO_TICKS(250));
-
-        GPIO_WritePin(GPIOA, 0, GPIO_STATE_LOW);
-        vTaskDelay(pdMS_TO_TICKS(250));
+        printf("GPIO_Init failed for Pin %d\n", UserBtn1.Pin);
     }
 }
 
@@ -63,13 +41,12 @@ int main()
     // xSystemClockConfig();
     xGPIO_Config();
 
-    xTaskCreate(xTaskLed1, "xTaskLed1", 256, NULL, 1, NULL);
-    xTaskCreate(xTaskLed2, "xTaskLed2", 256, NULL, 1, NULL);
-
-    vTaskStartScheduler();
+    uint32_t val = 0;
 
     while (1)
     {
+        val = GPIO_ReadPin(GPIOC, 13);
+        GPIO_WritePin(GPIOA, 5, !val);
     }
 
     return 0;

@@ -30,6 +30,8 @@ endforeach()
 
 include_directories(${CMAKE_SOURCE_DIR}/driver/gpio)
 include_directories(${CMAKE_SOURCE_DIR}/driver/rcc)
+include_directories(${CMAKE_SOURCE_DIR}/driver/timer)
+include_directories(${CMAKE_SOURCE_DIR}/driver/bme680)
 include_directories(${CMAKE_SOURCE_DIR}/core/CMSIS/Include)
 include_directories(${CMAKE_SOURCE_DIR}/core/CMSIS/Device)
 include_directories(${CMAKE_SOURCE_DIR}/inc)
