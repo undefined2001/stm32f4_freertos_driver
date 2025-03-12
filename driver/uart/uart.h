@@ -3,23 +3,21 @@
 #include "stm32f446xx.h"
 
 #ifdef __cplusplus
-
-typedef struct
-{
-    USART_TypeDef *pUARTx;
-    uint32_t Direcrtion;
-    uint32_t Parity;
-    uint32_t ParityCtrl;
-    uint32_t DataFrameFormat;
-    
-
-} UART_Handle_t;
-
 extern "C"
 {
 #endif
 
-    void UART_Init();
+    typedef struct
+    {
+        USART_TypeDef *pUARTx;
+        uint32_t Direcrtion;
+        uint32_t Parity;
+        uint32_t ParityCtrl;
+        uint32_t DataFrameFormat;
+
+    } UART_Handle_t;
+
+    void UART_Init(UART_Handle_t *pHandle);
     void UART_SendBuffer();
     void UART_RecvBuffer();
     void UART_SendBufferDMA();

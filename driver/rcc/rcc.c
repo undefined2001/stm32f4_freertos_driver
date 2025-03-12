@@ -175,3 +175,53 @@ RCC_Error_t RCC_DisableGPIOClock(GPIO_TypeDef *pGPIOx)
 
     return RCC_ERR; // If pGPIOx doesn't match any known GPIO peripheral
 }
+
+RCC_Error_t RCC_EnableUSARTClock(USART_TypeDef *pUSARTx)
+{
+    switch ((uint32_t)pUSARTx)
+    {
+    case (uint32_t)USART1:
+        RCC->APB2ENR |= RCC_APB2ENR_USART1EN;
+        break;
+    case (uint32_t)USART2:
+        RCC->APB1ENR |= RCC_APB1ENR_USART2EN;
+        break;
+    case (uint32_t)USART3:
+        RCC->APB1ENR |= RCC_APB1ENR_USART3EN;
+        break;
+    case (uint32_t)UART4:
+        RCC->APB1ENR |= RCC_APB1ENR_UART4EN;
+        break;
+    case (uint32_t)UART5:
+        RCC->APB1ENR |= RCC_APB1ENR_UART5EN;
+        break;
+    default:
+        return RCC_ERR; // Invalid USART
+    }
+    return RCC_OK;
+}
+
+RCC_Error_t RCC_DisableUSARTClock(USART_TypeDef *pUSARTx)
+{
+    switch ((uint32_t)pUSARTx)
+    {
+    case (uint32_t)USART1:
+        RCC->APB2ENR &= ~RCC_APB2ENR_USART1EN;
+        break;
+    case (uint32_t)USART2:
+        RCC->APB1ENR &= ~RCC_APB1ENR_USART2EN;
+        break;
+    case (uint32_t)USART3:
+        RCC->APB1ENR &= ~RCC_APB1ENR_USART3EN;
+        break;
+    case (uint32_t)UART4:
+        RCC->APB1ENR &= ~RCC_APB1ENR_UART4EN;
+        break;
+    case (uint32_t)UART5:
+        RCC->APB1ENR &= ~RCC_APB1ENR_UART5EN;
+        break;
+    default:
+        return RCC_ERR; // Invalid USART
+    }
+    return RCC_OK;
+}
