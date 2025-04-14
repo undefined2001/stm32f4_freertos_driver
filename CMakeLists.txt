@@ -17,21 +17,23 @@ list(APPEND SOURCES ${SOURCES_CPP})
 list(APPEND SOURCES ${SOURCES_DRIVER})
 list(APPEND SOURCES ${FREERTOS_SOURCES})
 
+foreach(ITEM IN LISTS ${SOURCES})
+    message(STATUS ${ITEM})
+endforeach()
+
+
+
 list(FILTER SOURCES EXCLUDE REGEX "heap_1.c")
 list(FILTER SOURCES EXCLUDE REGEX "heap_2.c")
 list(FILTER SOURCES EXCLUDE REGEX "heap_3.c")
 list(FILTER SOURCES EXCLUDE REGEX "heap_5.c")
 
 foreach(SRC IN LISTS SOURCES)
-
-# message(STATUS ${SRC})
-    
+    file(RELATIVE_PATH REL_PATH ${CMAKE_SOURCE_DIR} ${SRC})
+    message(STATUS ${REL_PATH})
 endforeach()
 
-include_directories(${CMAKE_SOURCE_DIR}/driver/gpio)
-include_directories(${CMAKE_SOURCE_DIR}/driver/rcc)
-include_directories(${CMAKE_SOURCE_DIR}/driver/timer)
-include_directories(${CMAKE_SOURCE_DIR}/driver/bme680)
+include_directories(${CMAKE_SOURCE_DIR}/driver/inc)
 include_directories(${CMAKE_SOURCE_DIR}/core/CMSIS/Include)
 include_directories(${CMAKE_SOURCE_DIR}/core/CMSIS/Device)
 include_directories(${CMAKE_SOURCE_DIR}/inc)
@@ -44,6 +46,7 @@ target_sources(${PROJECT_NAME} PUBLIC ${SOURCES} ${STARTUP})
 target_compile_definitions(${PROJECT_NAME} PUBLIC STM32F446xx)
 
 target_compile_options(${PROJECT_NAME} PUBLIC 
+    -DSTM32F446xx
     -g
 )
 
@@ -52,8 +55,8 @@ target_link_options(${PROJECT_NAME} PUBLIC
     -T${LINKER}
     -Wl,--print-memory-usage
     -Wl,--gc-sections
+    -Wl,-Map=output.map
 )
-
 
 add_custom_command(
     TARGET ${PROJECT_NAME}

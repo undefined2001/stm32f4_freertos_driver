@@ -10,7 +10,7 @@ set(CMAKE_SIZE ${TOOLCHAIN_PREFIX}size)
 set(STARTUP ${CMAKE_SOURCE_DIR}/core/Startup/startup_stm32f446retx.c)
 set(LINKER ${CMAKE_SOURCE_DIR}/STM32F446RETX_FLASH.ld)
 
-set(CMAKE_C_FLAGS "-mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -g -ffunction-sections -fdata-sections")
+set(CMAKE_C_FLAGS "-mcpu=cortex-m4 -mthumb -mfloat-abi=hard -mfpu=fpv4-sp-d16 -ffunction-sections -fdata-sections")
 set(CMAKE_CXX_FLAGS "${CMAKE_C_FLAGS} -fno-rtti -fno-tree-loop-distribution -fno-exceptions")
 
 set(CMAKE_EXECUTABLE_SUFFIX_ASM ".elf")
