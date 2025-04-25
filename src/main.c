@@ -5,45 +5,53 @@
 
 #include "gpio.h"
 #include "rcc.h"
+#include "i2c.h"
+#include "imu6050.h"
+
+void imu_write_data(uint8_t address, uint8_t *data, uint8_t size)
+{
+    I2C_MasterSendData(I2C1, address, (uint8_t *)data, size);
+}
+
+void imu_read_data(uint8_t address, uint8_t *data, uint8_t size)
+{
+    I2C_MasterReceiveData(I2C1, address, data, size);
+}
+
+float gyro_data[3];
+float accel_data[3];
+imu6050 imu;
 
 void xGPIO_Config()
 {
-    RCC_EnableGPIOClock(GPIOA);
-    RCC_EnableGPIOClock(GPIOC);
-
-    GPIOA->MODER |= 2 << 10;
-    GPIOA->AFR[0] |= 0xF << 20;
-
+    RCC_EnableGPIOClock(GPIOB);
     GPIOConfig_t Config;
-    Config.Pin = GPIO_PIN5;
+    Config.pPort = GPIOB;
+    Config.Pin = GPIO_PIN8 | GPIO_PIN9;
     Config.Mode = GPIO_MODE_ALTFN;
-    Config.AFn = 5;
-    Config.pPort = GPIOA;
-    Config.Ospeed = GPIO_OSPEED_LOW;
+    Config.Otype = GPIO_OTYPE_OD;
+    Config.Pupd = GPIO_PUPD_PULLUP;
+    Config.Ospeed = GPIO_OSPEED_HIGH;
+    Config.AFn = 4;
     GPIO_Init(&Config);
-}
-
-void xLedBlinkTask(void *pvParams)
-{
-    while (1)
-    {
-        // GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_STATE_HIGH);
-        GPIOA->ODR ^= 1 << 5;
-        vTaskDelay(pdTICKS_TO_MS(1000));
-        // for (int i = 0; i < 1000000; i++)
-        //     ;
-
-        // GPIO_WritePin(GPIOA, GPIO_PIN_5, GPIO_STATE_LOW);
-        // vTaskDelay(pdMS_TO_TICKS(1000));
-    }
 }
 
 int main()
 {
-
     xGPIO_Config();
+    I2C_Init();
 
-    uint32_t val = 0;
+    imu_init(&imu, 0x68, imu_read_data, imu_write_data);
+
+    uint8_t reg = 0x75;
+    uint8_t res = imu_whoami(&imu);
+    if (res == 0x70)
+    {
+        imu_read_gyro(&imu, gyro_data);
+        imu_read_accel(&imu, accel_data);
+    }
+
+    volatile int a = 0;
 
     while (1)
     {
