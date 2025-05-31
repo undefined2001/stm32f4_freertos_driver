@@ -51,10 +51,16 @@ int main()
         imu_read_accel(&imu, accel_data);
     }
 
+    RCC->AHB1ENR |= RCC_AHB1ENR_GPIOAEN;
+
+    GPIOA->MODER |= 1 << 10;
+
     volatile int a = 0;
 
     while (1)
     {
+        GPIOA->ODR ^= 1 << 5;
+        for(int i = 0; i < 1000000; i++){}
     }
 
     return 0;
