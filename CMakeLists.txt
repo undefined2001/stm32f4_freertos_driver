@@ -78,7 +78,7 @@ add_custom_command(
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
 add_custom_target(flash 
-    COMMAND st-flash write ${PROJECT_NAME}.bin 0x8000000
+    COMMAND ${STLINK_PATH} --reset write ${PROJECT_NAME}.bin 0x8000000
 )
 elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
 add_custom_target(flash

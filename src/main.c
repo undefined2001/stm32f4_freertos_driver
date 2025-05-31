@@ -60,7 +60,7 @@ int main()
     while (1)
     {
         GPIOA->ODR ^= 1 << 5;
-        for(int i = 0; i < 1000000; i++){}
+        for(int i = 0; i < 200000; i++){}
     }
 
     return 0;
