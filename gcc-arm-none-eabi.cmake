@@ -3,7 +3,7 @@ set(CMAKE_SYSTEM_PROCESSOR Arm)
 
 # Here Goes the Configuration which finds the compiler in Both Windows and Linux
 message("#################### OS Info ###################")
-message("#                   ${CMAKE_HOST_SYSTEM_NAME}                    #")
+message("                   ${CMAKE_HOST_SYSTEM_NAME}                    ")
 message("################################################")
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")

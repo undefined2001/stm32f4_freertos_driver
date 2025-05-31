@@ -45,6 +45,7 @@ int main()
 
     uint8_t reg = 0x75;
     uint8_t res = imu_whoami(&imu);
+
     if (res == 0x70)
     {
         imu_read_gyro(&imu, gyro_data);
@@ -60,7 +61,9 @@ int main()
     while (1)
     {
         GPIOA->ODR ^= 1 << 5;
-        for(int i = 0; i < 200000; i++){}
+        for (int i = 0; i < 200000; i++)
+        {
+        }
     }
 
     return 0;

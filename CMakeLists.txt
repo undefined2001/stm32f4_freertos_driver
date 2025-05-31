@@ -2,7 +2,7 @@ cmake_minimum_required(VERSION 3.31)
 
 include(${CMAKE_SOURCE_DIR}/gcc-arm-none-eabi.cmake)
 
-project(stm32f4_freertos VERSION 0.0 LANGUAGES ASM C CXX)
+project(STM32F4XX VERSION 1.0 LANGUAGES ASM C CXX)
 
 set(FREERTOS_DIR ${CMAKE_SOURCE_DIR}/freertos)
 
@@ -20,7 +20,6 @@ list(APPEND SOURCES ${FREERTOS_SOURCES})
 # foreach(ITEM IN LISTS ${SOURCES})
 #     message(STATUS ${ITEM})
 # endforeach()
-
 
 list(FILTER SOURCES EXCLUDE REGEX "heap_1.c")
 list(FILTER SOURCES EXCLUDE REGEX "heap_2.c")
@@ -78,10 +77,10 @@ add_custom_command(
 
 if(CMAKE_HOST_SYSTEM_NAME STREQUAL "Linux")
 add_custom_target(flash 
-    COMMAND ${STLINK_PATH} --reset write ${PROJECT_NAME}.bin 0x8000000
+    COMMAND ${STLINK_PATH} --reset write ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bin 0x08000000
 )
 elseif(CMAKE_HOST_SYSTEM_NAME STREQUAL "Windows")
 add_custom_target(flash
-    COMMAND ${STLINK_PATH} -P ${PROJECT_NAME}.bin 0x08000000 -Rst
+    COMMAND ${STLINK_PATH} -P ${CMAKE_BINARY_DIR}/${PROJECT_NAME}.bin 0x08000000 -Rst
 )
 endif()
