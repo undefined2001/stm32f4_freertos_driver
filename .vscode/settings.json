@@ -5,6 +5,6 @@
         "stm32f446xx.h": "c"
     },
     "C_Cpp.errorSquiggles": "enabled",
-    "cortex-debug.variableUseNaturalFormat": true,
+    "cortex-debug.variableUseNaturalFormat": false,
     "C_Cpp.default.compilerPath": "c:\\Program Files (x86)\\Arm GNU Toolchain arm-none-eabi\\14.2 rel1\\bin\\arm-none-eabi-c++.exe"
 }
